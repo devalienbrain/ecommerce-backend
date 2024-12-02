@@ -4,3 +4,11 @@
 
 - **Backend live URL**: [Live link]()
 - **Frontend client code**: [Github repo link](https://github.com/devalienbrain/ecommerce-frontend)
+
+## Tech stack
+- node
+- expressjs
+- postgresql
+- prisma
+- jwt-authentication
+- cloudinary
