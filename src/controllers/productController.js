@@ -1,19 +1,31 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export const createProduct = async (req, res) => {
-  const { name, price, category, inventory, image } = req.body;
-  const { userId } = req;
+  const { name, price, category, inventory, image, createdBy } = req.body;
+
+  if (!createdBy) {
+    return res.status(400).json({ error: "Missing createdBy field" });
+  }
 
   try {
     const product = await prisma.product.create({
-      data: { name, price, category, inventory, image, createdBy: userId },
+      data: {
+        name,
+        price,
+        category,
+        inventory,
+        image,
+        User: {
+          connect: { id: createdBy }, // Ensure `createdBy` exists in the User table
+        },
+      },
     });
-
-    res.status(201).json({ message: "Product created successfully", product });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(201).json(product);
+  } catch (error) {
+    console.error("Product Creation Error:", error);
+    res.status(500).json({ error: "Failed to create product" });
   }
 };
 
