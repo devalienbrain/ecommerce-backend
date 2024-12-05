@@ -7,20 +7,34 @@ const prisma = new PrismaClient();
 export const register = async (req, res) => {
   const { email, password, role } = req.body;
 
-  if (!email || !password) {
+  // Basic validation
+  if (!email || !password || !role) {
     return res.status(400).json({ message: "All fields are required." });
   }
 
   try {
+    // Check if role is valid
+    const validRoles = ["user", "vendor", "admin"];
+    if (!validRoles.includes(role)) {
+      return res.status(400).json({ message: "Invalid role specified." });
+    }
+
+    // Check for existing user
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email already in use." });
+    }
+
+    // Hash password and create user
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
       data: { email, password: hashedPassword, role },
     });
-    console.log("Hashed Password (Register):", hashedPassword);
 
     res.status(201).json({ message: "User registered successfully", user });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    console.error("Registration error:", err);
+    res.status(500).json({ error: "Server error. Please try again." });
   }
 };
 
