@@ -29,11 +29,16 @@ export const createProduct = async (req, res) => {
   }
 };
 
+
 export const getAllProducts = async (req, res) => {
   try {
-    const products = await prisma.product.findMany();
+    const products = await prisma.product.findMany({
+      include: {
+        Category: true, // Include category details
+      },
+    });
     res.status(200).json(products);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: "Failed to fetch products" });
   }
 };

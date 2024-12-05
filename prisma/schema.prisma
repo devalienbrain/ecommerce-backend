@@ -22,16 +22,23 @@ model User {
   products  Product[] // Define the relationship on the User model
 }
 
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  products  Product[] // Define the relationship on the Category model
+}
+
 model Product {
   id          Int      @id @default(autoincrement())
   name        String
   price       Float
-  category    String
   inventory   Int
   image       String?
   createdBy   Int
+  categoryId  Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   User        User     @relation(fields: [createdBy], references: [id])
+  Category    Category @relation(fields: [categoryId], references: [id])
 }
