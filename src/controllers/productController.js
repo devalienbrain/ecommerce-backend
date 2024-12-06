@@ -2,12 +2,13 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-
 export const createProduct = async (req, res) => {
   const { name, price, categoryId, inventory, image, createdBy } = req.body;
 
   if (!createdBy || !categoryId) {
-    return res.status(400).json({ error: "Missing required fields: createdBy or categoryId" });
+    return res
+      .status(400)
+      .json({ error: "Missing required fields: createdBy or categoryId" });
   }
 
   try {
@@ -33,17 +34,37 @@ export const createProduct = async (req, res) => {
   }
 };
 
-
-
 export const getAllProducts = async (req, res) => {
   try {
     const products = await prisma.product.findMany({
       include: {
-        Category: true, 
+        Category: true,
       },
     });
     res.status(200).json(products);
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch products" });
+  }
+};
+
+// Add this function to fetch a single product by ID
+export const getProductById = async (req, res) => {
+  const { productId } = req.params; // Get productId from request params
+
+  try {
+    const product = await prisma.product.findUnique({
+      where: { id: parseInt(productId, 10) },
+      include: {
+        Category: true, // Include category if needed
+      },
+    });
+
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    res.status(200).json(product);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch product" });
   }
 };
