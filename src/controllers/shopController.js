@@ -2,7 +2,6 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// Get the current shop for the vendor
 // Get the current shop(s) for the vendor
 export const getShop = async (req, res) => {
   const { userId } = req.query; // Read from query params

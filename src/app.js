@@ -6,6 +6,7 @@ import { productRoutes } from "./routes/productRoutes.js";
 import { userRoutes } from "./routes/userRoutes.js";
 import { categoryRoutes } from "./routes/categoryRoutes.js";
 import { shopRoutes } from "./routes/shopRoutes.js";
+import { userFeaturesRoutes } from "./routes/userFeaturesRoutes.js";
 
 const app = express();
 
@@ -18,5 +19,6 @@ app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/shop", shopRoutes);
+app.use("/api/user-features", userFeaturesRoutes);
 
 export default app;
