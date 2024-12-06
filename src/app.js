@@ -19,6 +19,6 @@ app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/shop", shopRoutes);
-app.use("/api/user-features", userFeaturesRoutes);
+app.use("/api", userFeaturesRoutes);
 
 export default app;

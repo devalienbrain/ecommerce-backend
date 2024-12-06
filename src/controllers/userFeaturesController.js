@@ -132,7 +132,12 @@ export const addReview = async (req, res) => {
 
   try {
     const review = await prisma.review.create({
-      data: { userId, productId, rating, comment },
+      data: {
+        userId: parseInt(userId, 10), // Ensure userId is an integer
+        productId: parseInt(productId, 10), // Ensure productId is an integer
+        rating: parseInt(rating, 10), // Ensure rating is an integer
+        comment,
+      },
     });
     res.status(201).json(review);
   } catch (error) {
