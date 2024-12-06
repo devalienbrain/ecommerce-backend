@@ -35,19 +35,34 @@ export const createProduct = async (req, res) => {
 };
 
 export const getAllProducts = async (req, res) => {
+  const { category } = req.query; 
+
   try {
-    const products = await prisma.product.findMany({
-      include: {
-        Category: true,
-      },
-    });
+    const products = category
+      ? await prisma.product.findMany({
+          where: {
+            Category: {
+              id: parseInt(category, 10), 
+            },
+          },
+          include: {
+            Category: true, 
+          },
+        })
+      : await prisma.product.findMany({
+          include: {
+            Category: true, 
+          },
+        });
+
     res.status(200).json(products);
   } catch (err) {
+    console.error("Error fetching products:", err);
     res.status(500).json({ error: "Failed to fetch products" });
   }
 };
 
-// Add this function to fetch a single product by ID
+// function to fetch a single product by ID
 export const getProductById = async (req, res) => {
   const { productId } = req.params; // Get productId from request params
 
