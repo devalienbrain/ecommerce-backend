@@ -8,3 +8,9 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+
+// Paymemnt sslcommerz integration part
+import SSLCommerzPayment from "sslcommerz-lts";
+const store_id = process.env.SSLCOMMERZ_STORE_ID;
+const store_passwd = process.env.SSLCOMMERZ_STORE_PASSWORD;
+const is_live = false; //true for live, false for sandbox
