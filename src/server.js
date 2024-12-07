@@ -10,7 +10,6 @@ app.listen(PORT, () => {
 });
 
 // Paymemnt sslcommerz integration part
-import SSLCommerzPayment from "sslcommerz-lts";
-const store_id = process.env.SSLCOMMERZ_STORE_ID;
-const store_passwd = process.env.SSLCOMMERZ_STORE_PASSWORD;
-const is_live = false; //true for live, false for sandbox
+export const store_id = process.env.SSLCOMMERZ_STORE_ID;
+export const store_passwd = process.env.SSLCOMMERZ_STORE_PASSWORD;
+export const is_live = false; //true for live, false for sandbox
