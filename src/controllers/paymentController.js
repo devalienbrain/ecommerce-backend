@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { is_live, store_id, store_passwd } from "../server.js";
 import SSLCommerzPayment from "sslcommerz-lts";
+import { v4 as uuidv4 } from "uuid";
 
 const prisma = new PrismaClient();
 export const createPayment = async (req, res) => {
@@ -62,13 +63,15 @@ export const createPayment = async (req, res) => {
     // });
 
     // SSLCommerz Payment integration Starts here
+    const tranId = `REF${uuidv4().slice(0, 8).toUpperCase()}`;
+
     const data = {
       total_amount: totalPriceToPay,
       currency: "BDT",
-      tran_id: "REF123", // use unique tran_id for each api call
-      success_url: "http://localhost:3030/success",
-      fail_url: "http://localhost:3030/fail",
-      cancel_url: "http://localhost:3030/cancel",
+      tran_id: tranId, // use unique tran_id for each api call
+      success_url: `http://localhost:5000/api/payment/success/${tranId}`,
+      fail_url: `http://localhost:5000/api/payment/fail/${tranId}`,
+      cancel_url: `http://localhost:5000/api/payment/cancel/${tranId}`,
       ipn_url: "http://localhost:3030/ipn",
       shipping_method: "Courier",
       product_name: "Computer.",
@@ -106,4 +109,17 @@ export const createPayment = async (req, res) => {
   } finally {
     // await prisma.$disconnect();
   }
+};
+
+export const successfulPayment = async (req, res) => {
+  const { tranId } = req.params;
+  res.redirect(`http://localhost:3000/dashboard/payment/success/${tranId}`);
+};
+export const failedPayment = async (req, res) => {
+  const { tranId } = req.params;
+  res.redirect(`http://localhost:3000/dashboard/payment/fail/${tranId}`);
+};
+export const cancelledPayment = async (req, res) => {
+  const { tranId } = req.params;
+  res.redirect(`http://localhost:3000/dashboard/payment/cancel/${tranId}`);
 };
