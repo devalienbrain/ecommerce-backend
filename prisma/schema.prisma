@@ -47,14 +47,16 @@ model Product {
 }
 
 model Order {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(cuid()) // Change to String and use cuid() or UUID
   userId     Int
   totalPrice Float
   createdAt  DateTime @default(now())
+  status     String   @default("pending")
 
   user    User        @relation(fields: [userId], references: [id])
-  products Product[]   @relation("OrderProducts") // A product can be part of multiple orders, relationship name added
+  products Product[]   @relation("OrderProducts")
 }
+
 
 
 model Shop {

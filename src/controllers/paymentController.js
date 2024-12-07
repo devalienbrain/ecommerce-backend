@@ -48,6 +48,7 @@ export const createPayment = async (req, res) => {
       data: {
         user: { connect: { id: userId } }, // Connect existing user by userId
         totalPrice: totalPriceToPay,
+        status: "pending",
         products: {
           connect: products.map((product) => ({ id: product.id })), // Connect products to the order
         },
@@ -113,13 +114,58 @@ export const createPayment = async (req, res) => {
 
 export const successfulPayment = async (req, res) => {
   const { tranId } = req.params;
-  res.redirect(`http://localhost:3000/dashboard/payment/success/${tranId}`);
+
+  try {
+    // Find the order by tranId and update the status to 'success'
+    const order = await prisma.order.updateMany({
+      where: { id: tranId },
+      data: { status: "success" },
+    });
+
+    // Empty the cart after success
+    await prisma.cart.deleteMany({
+      where: { userId: order.userId },
+    });
+
+    res.redirect(`http://localhost:3000/dashboard/payment/success/${tranId}`);
+  } catch (error) {
+    console.error("Error updating payment status:", error);
+    res
+      .status(500)
+      .json({ error: "Failed to process the successful payment." });
+  }
 };
+
 export const failedPayment = async (req, res) => {
   const { tranId } = req.params;
-  res.redirect(`http://localhost:3000/dashboard/payment/fail/${tranId}`);
+
+  try {
+    // Find the order by tranId and update the status to 'failed'
+    await prisma.order.updateMany({
+      where: { id: tranId },
+      data: { status: "failed" },
+    });
+
+    res.redirect(`http://localhost:3000/dashboard/payment/fail/${tranId}`);
+  } catch (error) {
+    console.error("Error updating payment status:", error);
+    res.status(500).json({ error: "Failed to process the failed payment." });
+  }
 };
+
 export const cancelledPayment = async (req, res) => {
   const { tranId } = req.params;
-  res.redirect(`http://localhost:3000/dashboard/payment/cancel/${tranId}`);
+
+  try {
+    // Find the order by tranId and update the status to 'cancelled'
+    await prisma.order.updateMany({
+      where: { id: tranId },
+      data: { status: "cancelled" },
+    });
+
+    res.redirect(`http://localhost:3000/dashboard/payment/cancel/${tranId}`);
+  } catch (error) {
+    console.error("Error updating payment status:", error);
+    res.status(500).json({ error: "Failed to process the cancelled payment." });
+  }
 };
