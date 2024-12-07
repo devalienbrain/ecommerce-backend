@@ -9,7 +9,6 @@ export const getOrders = async (req, res) => {
   try {
     const orders = await prisma.order.findMany({
       where: { userId: parseInt(userId, 10) },
-      include: { product: true },
     });
     res.status(200).json(orders);
   } catch (error) {
