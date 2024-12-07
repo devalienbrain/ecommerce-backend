@@ -40,11 +40,22 @@ model Product {
 
   User           User             @relation(fields: [createdBy], references: [id]) // Product created by a user
   Category       Category         @relation(fields: [categoryId], references: [id]) // Product belongs to a category
-  orders         Order[] // A product can be part of multiple orders
-  cart           Cart[] // A product can be part of multiple carts
-  reviews        Review[] // A product can have multiple reviews
+  orders         Order[]          @relation("OrderProducts") // A product can be part of multiple orders
+  cart           Cart[]           // A product can be part of multiple carts
+  reviews        Review[]         // A product can have multiple reviews
   recentlyViewed RecentlyViewed[] // A product can be viewed multiple times
 }
+
+model Order {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  totalPrice Float
+  createdAt  DateTime @default(now())
+
+  user    User        @relation(fields: [userId], references: [id])
+  products Product[]   @relation("OrderProducts") // A product can be part of multiple orders, relationship name added
+}
+
 
 model Shop {
   id          Int     @id @default(autoincrement())
@@ -56,17 +67,7 @@ model Shop {
   vendor User @relation(fields: [vendorId], references: [id]) // Shop belongs to a vendor
 }
 
-model Order {
-  id         Int      @id @default(autoincrement())
-  userId     Int
-  productId  Int
-  quantity   Int      @default(1)
-  totalPrice Float
-  createdAt  DateTime @default(now())
 
-  user    User    @relation(fields: [userId], references: [id])
-  product Product @relation(fields: [productId], references: [id])
-}
 
 model Cart {
   id        Int      @id @default(autoincrement())
