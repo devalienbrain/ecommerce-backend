@@ -70,10 +70,10 @@ export const createPayment = async (req, res) => {
       total_amount: totalPriceToPay,
       currency: "BDT",
       tran_id: tranId, // use unique tran_id for each api call
-      success_url: `http://localhost:5000/api/payment/success/${tranId}`,
-      fail_url: `http://localhost:5000/api/payment/fail/${tranId}`,
-      cancel_url: `http://localhost:5000/api/payment/cancel/${tranId}`,
-      ipn_url: "http://localhost:3030/ipn",
+      success_url: `${process.env.SERVER_URL}/api/payment/success/${tranId}`,
+      fail_url: `${process.env.SERVER_URL}/api/payment/fail/${tranId}`,
+      cancel_url: `${process.env.SERVER_URL}/api/payment/cancel/${tranId}`,
+      ipn_url: `${process.env.SERVER_URL}/ipn`,
       shipping_method: "Courier",
       product_name: "Computer.",
       product_category: "Electronic",
@@ -127,7 +127,9 @@ export const successfulPayment = async (req, res) => {
       where: { userId: order.userId },
     });
 
-    res.redirect(`http://localhost:3000/dashboard/payment/success/${tranId}`);
+    res.redirect(
+      `${process.env.CLIENT_URL}/dashboard/payment/success/${tranId}`
+    );
   } catch (error) {
     console.error("Error updating payment status:", error);
     res
@@ -146,7 +148,7 @@ export const failedPayment = async (req, res) => {
       data: { status: "failed" },
     });
 
-    res.redirect(`http://localhost:3000/dashboard/payment/fail/${tranId}`);
+    res.redirect(`${process.env.CLIENT_URL}/dashboard/payment/fail/${tranId}`);
   } catch (error) {
     console.error("Error updating payment status:", error);
     res.status(500).json({ error: "Failed to process the failed payment." });
@@ -163,7 +165,9 @@ export const cancelledPayment = async (req, res) => {
       data: { status: "cancelled" },
     });
 
-    res.redirect(`http://localhost:3000/dashboard/payment/cancel/${tranId}`);
+    res.redirect(
+      `${process.env.CLIENT_URL}/dashboard/payment/cancel/${tranId}`
+    );
   } catch (error) {
     console.error("Error updating payment status:", error);
     res.status(500).json({ error: "Failed to process the cancelled payment." });

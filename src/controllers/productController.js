@@ -35,23 +35,23 @@ export const createProduct = async (req, res) => {
 };
 
 export const getAllProducts = async (req, res) => {
-  const { category } = req.query; 
+  const { category } = req.query;
 
   try {
     const products = category
       ? await prisma.product.findMany({
           where: {
             Category: {
-              id: parseInt(category, 10), 
+              id: parseInt(category, 10),
             },
           },
           include: {
-            Category: true, 
+            Category: true,
           },
         })
       : await prisma.product.findMany({
           include: {
-            Category: true, 
+            Category: true,
           },
         });
 
@@ -81,5 +81,30 @@ export const getProductById = async (req, res) => {
     res.status(200).json(product);
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch product" });
+  }
+};
+
+// Update product details by productId
+export const updateProduct = async (req, res) => {
+  const { productId } = req.params; // Get productId from request params
+  const { name, price, inventory, image, categoryId } = req.body; // Get updated data from request body
+
+  try {
+    const product = await prisma.product.update({
+      where: { id: parseInt(productId, 10) }, // Find the product by ID
+      data: {
+        name,
+        price: parseFloat(price), // Ensure price is a number
+        inventory: parseInt(inventory, 10), // Ensure inventory is a number
+        image,
+        categoryId: categoryId ? parseInt(categoryId, 10) : undefined, // Update category if provided
+        updatedAt: new Date(), // Automatically update timestamp
+      },
+    });
+
+    res.status(200).json(product); // Return the updated product
+  } catch (error) {
+    console.error("Product Update Error:", error);
+    res.status(500).json({ error: "Failed to update product" });
   }
 };
