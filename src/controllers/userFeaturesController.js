@@ -16,6 +16,18 @@ export const getOrders = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch orders." });
   }
 };
+// Get all orders
+export const getAllOrders = async (req, res) => {
+  
+  try {
+    const orders = await prisma.order.findMany({
+       });
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    res.status(500).json({ error: "Failed to fetch orders." });
+  }
+};
 
 // Add an order
 export const addOrder = async (req, res) => {

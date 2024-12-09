@@ -9,12 +9,14 @@ import {
   addRecentlyViewed,
   getMyReviews,
   addReview,
+  getAllOrders,
 } from "../controllers/userFeaturesController.js";
 
 const router = express.Router();
 
 // Orders
 router.get("/orders", getOrders);
+router.get("/allOrders", getAllOrders);
 router.post("/orders", addOrder);
 
 // Cart
