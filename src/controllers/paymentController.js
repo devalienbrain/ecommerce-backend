@@ -1,7 +1,8 @@
 import { PrismaClient } from "@prisma/client";
-import { is_live, store_id, store_passwd } from "../server.js";
 import SSLCommerzPayment from "sslcommerz-lts";
 import { v4 as uuidv4 } from "uuid";
+import { is_live, store_id, store_passwd } from "../app.js";
+
 
 const prisma = new PrismaClient();
 export const createPayment = async (req, res) => {

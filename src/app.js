@@ -11,6 +11,12 @@ import { paymentRoutes } from "./routes/paymentRoutes.js";
 
 const app = express();
 
+// Paymemnt sslcommerz integration part
+export const store_id = process.env.SSLCOMMERZ_STORE_ID;
+export const store_passwd = process.env.SSLCOMMERZ_STORE_PASSWORD;
+export const is_live = false; //true for live, false for sandbox
+
+
 // Middleware
 app.use(cors());
 app.use(express.json());
