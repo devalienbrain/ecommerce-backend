@@ -16,9 +16,15 @@ export const store_id = process.env.SSLCOMMERZ_STORE_ID;
 export const store_passwd = process.env.SSLCOMMERZ_STORE_PASSWORD;
 export const is_live = false; //true for live, false for sandbox
 
-
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "https://ecommerce-frontend-gold-mu.vercel.app",
+    ],
+  })
+);
 app.use(express.json());
 app.use(bodyParser.json());
 app.use("/api/auth", authRoutes);
